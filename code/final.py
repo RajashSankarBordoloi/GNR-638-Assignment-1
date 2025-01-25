@@ -121,7 +121,7 @@ def main():
         plt.ylabel('True Label')
         plt.xlabel('Predicted Label')
 
-    def calculate_accuracy(test_labels, predicted_categories, categories):
+    def calculate_accuracy(test_labels, predicted_categories, categories, file_path='accuracy.txt'):
         """
         Calculate and display the overall and per-category accuracy.
         """
@@ -133,6 +133,14 @@ def main():
             category_total = test_labels.count(category)
             category_accuracy = category_correct / category_total if category_total > 0 else 0
             print("{}: {:.2f}".format(category, category_accuracy))
+        #save it in a text file and also the name of the file should be the confusion_matrix_classifier_vocab_size.txt
+        with open(file_path, 'w') as f:
+            f.write("Overall Accuracy = {:.2f}\n".format(total_accuracy))
+            for category in categories:
+                category_correct = sum(1 for x, y in zip(test_labels, predicted_categories) if x == y and x == category)
+                category_total = test_labels.count(category)
+                category_accuracy = category_correct / category_total if category_total > 0 else 0
+                f.write("{}: {:.2f}\n".format(category, category_accuracy)) 
 
     def classify_and_evaluate(train_feats, train_labels, test_feats, test_labels, classifier_name, classifier_fn, abbr_categories, output_path):
             """
@@ -151,10 +159,13 @@ def main():
                 total_accuracy_svm = sum(1 for x, y in zip(test_labels, predicted_categories) if x == y) / len(test_labels)
                 accuracy_svm.append(total_accuracy_svm)
             else:
+                print("Invalid classifier name:", classifier_name)
                 raise ValueError("Invalid classifier name:", classifier_name)
+            
+            file_path = "accuracy_{}_{}.txt".format(classifier_name, vocab_size)
 
             # Calculate accuracy
-            calculate_accuracy(test_labels, predicted_categories, CATEGORIES)
+            calculate_accuracy(test_labels, predicted_categories, CATEGORIES, file_path)
 
             # Convert labels to numeric IDs
             test_labels_ids = [CATE2ID[label] for label in test_labels]
@@ -213,16 +224,12 @@ def main():
         print("Visualizing t-SNE")
         visualize_tsne(all_feats, all_labels, CATEGORIES, save_path="tsne_visualization_{}.png".format(vocab_size))
         
-        # Step 2: Classify each test image by training and using the appropriate classifier
+        # # Step 2: Classify each test image by training and using the appropriate classifier
+        # predicted_categories_knn = nearest_neighbor_classify(train_image_feats, train_labels, test_image_feats)
+        # predicted_categories_svm = svm_classify(train_image_feats, train_labels, test_image_feats)
         
-        predicted_categories_knn = nearest_neighbor_classify(train_image_feats, train_labels, test_image_feats)
-
-        predicted_categories_svm = svm_classify(train_image_feats, train_labels, test_image_feats)
-        
-        # Step 3: Build confusion matrix
-        test_labels_ids = [CATE2ID[x] for x in test_labels]
-        train_labels_ids = [CATE2ID[x] for x in train_labels]
-
+        # # Step 3: Build confusion matrix
+        print("Classifying and evaluating using KNN and SVM")
         classify_and_evaluate(
             train_image_feats,
             train_labels,
