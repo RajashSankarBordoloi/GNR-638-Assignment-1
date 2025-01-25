@@ -224,11 +224,11 @@ def main():
         print("Visualizing t-SNE")
         visualize_tsne(all_feats, all_labels, CATEGORIES, save_path="tsne_visualization_{}.png".format(vocab_size))
         
-        # # Step 2: Classify each test image by training and using the appropriate classifier
         # predicted_categories_knn = nearest_neighbor_classify(train_image_feats, train_labels, test_image_feats)
         # predicted_categories_svm = svm_classify(train_image_feats, train_labels, test_image_feats)
         
-        # # Step 3: Build confusion matrix
+        
+        # Step 2: Classify each test image by training and using the appropriate classifier & save results
         print("Classifying and evaluating using KNN and SVM")
         classify_and_evaluate(
             train_image_feats,
