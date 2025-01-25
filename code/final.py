@@ -139,17 +139,19 @@ def main():
             Classify using the given classifier and evaluate performance.
             """
             print("Classifying using", classifier_name,"...")
-            if classifier_fn == 'nearest_neighbor':
+            if classifier_name == 'nearest_neighbor':
                 # YOU CODE nearest_neighbor_classify.py
                 predicted_categories = nearest_neighbor_classify(train_image_feats, train_labels, test_image_feats)
                 total_accuracy_knn = sum(1 for x, y in zip(test_labels, predicted_categories) if x == y) / len(test_labels)
                 accuracy_knn.append(total_accuracy_knn)
 
-            elif classifier_fn == 'support_vector_machine':
+            elif classifier_name == 'support_vector_machine':
                 # YOU CODE svm_classify.py
                 predicted_categories = svm_classify(train_image_feats, train_labels, test_image_feats)
                 total_accuracy_svm = sum(1 for x, y in zip(test_labels, predicted_categories) if x == y) / len(test_labels)
                 accuracy_svm.append(total_accuracy_svm)
+            else:
+                raise ValueError("Invalid classifier name:", classifier_name)
 
             # Calculate accuracy
             calculate_accuracy(test_labels, predicted_categories, CATEGORIES)
@@ -226,7 +228,7 @@ def main():
             train_labels,
             test_image_feats,
             test_labels,
-            "KNN",
+            "nearest_neighbor",
             nearest_neighbor_classify,
             ABBR_CATEGORIES,
             output_path="confusion_matrix_knn_{}.png".format(vocab_size)
@@ -238,7 +240,7 @@ def main():
             train_labels,
             test_image_feats,
             test_labels,
-            "SVM",
+            "support_vector_machine",
             svm_classify,
             ABBR_CATEGORIES,
             output_path="confusion_matrix_svm_{}.png".format(vocab_size)
