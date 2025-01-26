@@ -1,5 +1,7 @@
+from re import L
 from sklearn import preprocessing
-from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVC 
+from sklearn.svm import SVC
 from sklearn import preprocessing
 import pdb
 

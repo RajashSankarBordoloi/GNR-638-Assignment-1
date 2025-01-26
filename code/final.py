@@ -175,6 +175,26 @@ def main():
             build_confusion_mtx(test_labels_ids, predicted_categories_ids, abbr_categories, output_path)
 
     
+    def svm_multi_classify(train_image_feats, train_labels, test_image_feats):
+        # klearn.svm.SVC(*, C=1.0, kernel='rbf', degree=3, gamma='scale', coef0=0.0, shrinking=True, probability=False, tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1, decision_function_shape='ovr', break_ties=False, random_state=None)
+        # use different kernels like rbf, linear, ploy etc 
+        Linear_svc = LinearSVC(C=700.0, class_weight=None, dual=True, fit_intercept=True, intercept_scaling=1, loss='squared_hinge', max_iter= 2000, multi_class='ovr', penalty='l2', random_state=0, tol= 1e-4, verbose=0)
+        poly_svc = SVC(kernel='poly', degree=3, gamma='scale', coef0=0.0, C=1.0, verbose=0, max_iter=-1, decision_function_shape='ovr', random_state=None)
+        rbf_svc = SVC(kernel='rbf', gamma='scale', C=1.0, verbose=0, max_iter=-1, decision_function_shape='ovr', random_state=None)
+        sigmoid_svc = SVC(kernel='sigmoid', gamma='scale', coef0=0.0, C=1.0, verbose=0, max_iter=-1, decision_function_shape='ovr', random_state=None)
+        # fit the model
+        Linear_svc.fit(train_image_feats, train_labels)
+        poly_svc.fit(train_image_feats, train_labels)
+        rbf_svc.fit(train_image_feats, train_labels)
+        sigmoid_svc.fit(train_image_feats, train_labels)
+        # predict the model
+        pred_label_linear = Linear_svc.predict(test_image_feats)
+        pred_label_poly = poly_svc.predict(test_image_feats)
+        pred_label_rbf = rbf_svc.predict(test_image_feats)
+        pred_label_sigmoid = sigmoid_svc.predict(test_image_feats)
+        
+        return pred_label_linear, pred_label_poly, pred_label_rbf, pred_label_sigmoid
+        
     print("Getting paths and labels for all train and test data")
     train_image_paths, test_image_paths, val_image_paths, train_labels, test_labels, val_labels = \
         get_image_paths(DATA_PATH, CATEGORIES)
@@ -182,8 +202,8 @@ def main():
     print("Train labels:",np.shape(train_labels))
     print("Test labels:", np.shape(test_labels))
 
-    vocab_sizes = [50, 80, 100, 120, 150, 200]
-    # vocab_sizes = [150, 200]
+    # vocab_sizes = [50, 80, 100, 120, 150, 200]
+    vocab_sizes = [200]
     accuracy_knn = []
     accuracy_svm = []
     
@@ -225,53 +245,100 @@ def main():
         print("Visualizing t-SNE")
         visualize_tsne(all_feats, all_labels, CATEGORIES, save_path="tsne_visualization_{}.png".format(vocab_size))
         
-        # predicted_categories_knn = nearest_neighbor_classify(train_image_feats, train_labels, test_image_feats)
-        # predicted_categories_svm = svm_classify(train_image_feats, train_labels, test_image_feats)
-        
         
         # Step 2: Classify each test image by training and using the appropriate classifier & save results
-        print("Classifying and evaluating using KNN and SVM")
-        classify_and_evaluate(
-            train_image_feats,
-            train_labels,
-            test_image_feats,
-            test_labels,
-            "nearest_neighbor",
-            nearest_neighbor_classify,
-            ABBR_CATEGORIES,
-            output_path="confusion_matrix_knn_{}.png".format(vocab_size)
-        )
+        # print("Classifying and evaluating using KNN and SVM")
+        # classify_and_evaluate(
+        #     train_image_feats,
+        #     train_labels,
+        #     test_image_feats,
+        #     test_labels,
+        #     "nearest_neighbor",
+        #     nearest_neighbor_classify,
+        #     ABBR_CATEGORIES,
+        #     output_path="confusion_matrix_knn_{}.png".format(vocab_size)
+        # )
 
         # Classify with SVM
-        classify_and_evaluate(
-            train_image_feats,
-            train_labels,
-            test_image_feats,
-            test_labels,
-            "support_vector_machine",
-            svm_classify,
-            ABBR_CATEGORIES,
-            output_path="confusion_matrix_svm_{}.png".format(vocab_size)
-        )
+        # classify_and_evaluate(
+        #     train_image_feats,
+        #     train_labels,
+        #     test_image_feats,
+        #     test_labels,
+        #     "support_vector_machine",
+        #     svm_classify,
+        #     ABBR_CATEGORIES,
+        #     output_path="confusion_matrix_svm_{}.png".format(vocab_size)
+        # )
+        
+        # Step 3: Classify using multi-class SVM
+        print("Classifying using multi-class SVM...")
+        pred_label_linear, pred_label_poly, pred_label_rbf, pred_label_sigmoid = svm_multi_classify(train_image_feats, train_labels, test_image_feats)
+        
+        # bar graph for multi-class SVM
+        accuracy_linear_svc = []
+        accuracy_poly_svc = []
+        accuracy_rbf_svc = []
+        accuracy_sigmoid_svc = []
+        for category in CATEGORIES:
+            category_correct_linear = sum(1 for x, y in zip(test_labels, pred_label_linear) if x == y and x == category)
+            category_total_linear = test_labels.count(category)
+            category_accuracy_linear = category_correct_linear / category_total_linear if category_total_linear > 0 else 0
+            accuracy_linear_svc.append(category_accuracy_linear)
+            
+            category_correct_poly = sum(1 for x, y in zip(test_labels, pred_label_poly) if x == y and x == category)
+            category_total_poly = test_labels.count(category)
+            category_accuracy_poly = category_correct_poly / category_total_poly if category_total_poly > 0 else 0
+            accuracy_poly_svc.append(category_accuracy_poly)
+            
+            category_correct_rbf = sum(1 for x, y in zip(test_labels, pred_label_rbf) if x == y and x == category)
+            category_total_rbf = test_labels.count(category)
+            category_accuracy_rbf = category_correct_rbf / category_total_rbf if category_total_rbf > 0 else 0
+            accuracy_rbf_svc.append(category_accuracy_rbf)
+            
+            category_correct_sigmoid = sum(1 for x, y in zip(test_labels, pred_label_sigmoid) if x == y and x == category)
+            category_total_sigmoid = test_labels.count(category)
+            category_accuracy_sigmoid = category_correct_sigmoid / category_total_sigmoid if category_total_sigmoid > 0 else 0
+            accuracy_sigmoid_svc.append(category_accuracy_sigmoid)
+            
+        # plot the bar graph
+        fig, ax = plt.subplots()
+        bar_width = 0.2
+        index = np.arange(len(CATEGORIES))
+        opacity = 0.8
+        ax.bar(index, accuracy_linear_svc, bar_width, alpha=opacity, color='b', label='Linear SVC')
+        ax.bar(index + bar_width, accuracy_poly_svc, bar_width, alpha=opacity, color='g', label='Poly SVC')
+        ax.bar(index + 2*bar_width, accuracy_rbf_svc, bar_width, alpha=opacity, color='r', label='RBF SVC')
+        ax.bar(index + 3*bar_width, accuracy_sigmoid_svc, bar_width, alpha=opacity, color='y', label='Sigmoid SVC')
+        ax.set_xlabel('Categories')
+        ax.set_ylabel('Accuracy')
+        ax.set_title('Accuracy of Multi-class SVM')
+        ax.set_xticks(index + bar_width)
+        ax.set_xticklabels(CATEGORIES)
+        ax.legend()
+        plt.xticks(rotation=90)
+        plt.tight_layout()
+        plt.savefig('accuracy_multi_class_svm{}.png'.format(vocab_size))
+        plt.show()
         
         # removing the pkl files 
-        os.remove('train_image_feats_1.pkl')
-        os.remove('test_image_feats_1.pkl')
-        os.remove('val_image_feats_1.pkl')
-        os.remove('vocab.pkl')
+        # os.remove('train_image_feats_1.pkl')
+        # os.remove('test_image_feats_1.pkl')
+        # os.remove('val_image_feats_1.pkl')
+        # os.remove('vocab.pkl')
         
     # Step 4: Plot accuracy vs. vocabulary size
-    plt.figure()
-    plt.plot(vocab_sizes, accuracy_knn, label='KNN', marker='o')
-    plt.plot(vocab_sizes, accuracy_svm, label='SVM', marker='s')
-    plt.xlabel('Vocabulary Size')
-    plt.ylabel('Accuracy')
-    plt.title('Accuracy vs. Vocabulary Size')
-    plt.ylim(1, 100)  # Set y-axis range to 1-100
-    plt.legend()
-    plt.grid(True, linestyle='--', alpha=0.7)  # Optional: Add a grid for better readability
-    plt.savefig('accuracy_vs_vocab_size.png')
-    plt.show()
+    # plt.figure()
+    # plt.plot(vocab_sizes, accuracy_knn, label='KNN', marker='o')
+    # plt.plot(vocab_sizes, accuracy_svm, label='SVM', marker='s')
+    # plt.xlabel('Vocabulary Size')
+    # plt.ylabel('Accuracy')
+    # plt.title('Accuracy vs. Vocabulary Size')
+    # plt.ylim(1, 100)  # Set y-axis range to 1-100
+    # plt.legend()
+    # plt.grid(True, linestyle='--', alpha=0.7)  # Optional: Add a grid for better readability
+    # plt.savefig('accuracy_vs_vocab_size.png')
+    # plt.show()
 
 
 
