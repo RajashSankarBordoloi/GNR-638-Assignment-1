@@ -183,6 +183,7 @@ def main():
     print("Test labels:", np.shape(test_labels))
 
     vocab_sizes = [50, 80, 100, 120, 150, 200]
+    # vocab_sizes = [150, 200]
     accuracy_knn = []
     accuracy_svm = []
     
