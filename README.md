@@ -46,7 +46,7 @@ The 128-dimensional SIFT keypoints were visualized in 2D using t-SNE. This provi
 
 1. Clone the repository:
    ```bash
-   git clone t
+   git clone https://github.com/RajashSankarBordoloi/Scene-Recognition-with-Bag-of-Words-master.git
    ```
 
 2. Navigate to the directory:
