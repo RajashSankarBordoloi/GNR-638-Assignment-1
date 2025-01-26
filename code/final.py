@@ -149,13 +149,13 @@ def main():
             """
             print("Classifying using", classifier_name,"...")
             if classifier_name == 'nearest_neighbor':
-                # YOU CODE nearest_neighbor_classify.py
+                # nearest_neighbor_classify.py
                 predicted_categories = nearest_neighbor_classify(train_image_feats, train_labels, test_image_feats)
                 total_accuracy_knn = sum(1 for x, y in zip(test_labels, predicted_categories) if x == y) / len(test_labels)
                 accuracy_knn.append(total_accuracy_knn)
 
             elif classifier_name == 'support_vector_machine':
-                # YOU CODE svm_classify.py
+                # svm_classify.py
                 predicted_categories = svm_classify(train_image_feats, train_labels, test_image_feats)
                 total_accuracy_svm = sum(1 for x, y in zip(test_labels, predicted_categories) if x == y) / len(test_labels)
                 accuracy_svm.append(total_accuracy_svm)
