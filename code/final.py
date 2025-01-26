@@ -202,8 +202,8 @@ def main():
     print("Train labels:",np.shape(train_labels))
     print("Test labels:", np.shape(test_labels))
 
-    # vocab_sizes = [50, 80, 100, 120, 150, 200]
-    vocab_sizes = [200]
+    vocab_sizes = [50, 80, 100, 120, 150, 200]
+    # vocab_sizes = [200]
     accuracy_knn = []
     accuracy_svm = []
     
@@ -247,29 +247,29 @@ def main():
         
         
         # Step 2: Classify each test image by training and using the appropriate classifier & save results
-        # print("Classifying and evaluating using KNN and SVM")
-        # classify_and_evaluate(
-        #     train_image_feats,
-        #     train_labels,
-        #     test_image_feats,
-        #     test_labels,
-        #     "nearest_neighbor",
-        #     nearest_neighbor_classify,
-        #     ABBR_CATEGORIES,
-        #     output_path="confusion_matrix_knn_{}.png".format(vocab_size)
-        # )
+        print("Classifying and evaluating using KNN and SVM")
+        classify_and_evaluate(
+            train_image_feats,
+            train_labels,
+            test_image_feats,
+            test_labels,
+            "nearest_neighbor",
+            nearest_neighbor_classify,
+            ABBR_CATEGORIES,
+            output_path="confusion_matrix_knn_{}.png".format(vocab_size)
+        )
 
         # Classify with SVM
-        # classify_and_evaluate(
-        #     train_image_feats,
-        #     train_labels,
-        #     test_image_feats,
-        #     test_labels,
-        #     "support_vector_machine",
-        #     svm_classify,
-        #     ABBR_CATEGORIES,
-        #     output_path="confusion_matrix_svm_{}.png".format(vocab_size)
-        # )
+        classify_and_evaluate(
+            train_image_feats,
+            train_labels,
+            test_image_feats,
+            test_labels,
+            "support_vector_machine",
+            svm_classify,
+            ABBR_CATEGORIES,
+            output_path="confusion_matrix_svm_{}.png".format(vocab_size)
+        )
         
         # Step 3: Classify using multi-class SVM
         print("Classifying using multi-class SVM...")
@@ -322,23 +322,23 @@ def main():
         plt.show()
         
         # removing the pkl files 
-        # os.remove('train_image_feats_1.pkl')
-        # os.remove('test_image_feats_1.pkl')
-        # os.remove('val_image_feats_1.pkl')
-        # os.remove('vocab.pkl')
+        os.remove('train_image_feats_1.pkl')
+        os.remove('test_image_feats_1.pkl')
+        os.remove('val_image_feats_1.pkl')
+        os.remove('vocab.pkl')
         
     # Step 4: Plot accuracy vs. vocabulary size
-    # plt.figure()
-    # plt.plot(vocab_sizes, accuracy_knn, label='KNN', marker='o')
-    # plt.plot(vocab_sizes, accuracy_svm, label='SVM', marker='s')
-    # plt.xlabel('Vocabulary Size')
-    # plt.ylabel('Accuracy')
-    # plt.title('Accuracy vs. Vocabulary Size')
-    # plt.ylim(1, 100)  # Set y-axis range to 1-100
-    # plt.legend()
-    # plt.grid(True, linestyle='--', alpha=0.7)  # Optional: Add a grid for better readability
-    # plt.savefig('accuracy_vs_vocab_size.png')
-    # plt.show()
+    plt.figure()
+    plt.plot(vocab_sizes, accuracy_knn, label='KNN', marker='o')
+    plt.plot(vocab_sizes, accuracy_svm, label='SVM', marker='s')
+    plt.xlabel('Vocabulary Size')
+    plt.ylabel('Accuracy')
+    plt.title('Accuracy vs. Vocabulary Size')
+    plt.ylim(1, 100)  # Set y-axis range to 1-100
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.7)  # Optional: Add a grid for better readability
+    plt.savefig('accuracy_vs_vocab_size.png')
+    plt.show()
 
 
 
