@@ -67,3 +67,6 @@ The 128-dimensional SIFT keypoints were visualized in 2D using t-SNE. This provi
 ## Conclusion
 This project demonstrates the application of the Bag-of-Words model for scene recognition on the UC Merced dataset. By experimenting with different numbers of codewords and visualizing the SIFT features, valuable insights into the model's performance were obtained.
 
+## Contributors
+M Rupesh Kumar Yadav[https://github.com/Rupesh4604] (24M0319) and Rajash Sankar Bordoloi (24M0326) of GNR, Dept CSRE, IIT Bombay 
+
