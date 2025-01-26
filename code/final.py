@@ -262,14 +262,17 @@ def main():
         
     # Step 4: Plot accuracy vs. vocabulary size
     plt.figure()
-    plt.plot(vocab_sizes, accuracy_knn, label='KNN')
-    plt.plot(vocab_sizes, accuracy_svm, label='SVM')
+    plt.plot(vocab_sizes, accuracy_knn, label='KNN', marker='o')
+    plt.plot(vocab_sizes, accuracy_svm, label='SVM', marker='s')
     plt.xlabel('Vocabulary Size')
     plt.ylabel('Accuracy')
     plt.title('Accuracy vs. Vocabulary Size')
+    plt.ylim(1, 100)  # Set y-axis range to 1-100
     plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.7)  # Optional: Add a grid for better readability
     plt.savefig('accuracy_vs_vocab_size.png')
     plt.show()
+
 
 
 if __name__ == '__main__':
