@@ -32,17 +32,35 @@ This project modifies the original codebase [Scene Recognition with Bag-of-Words
 
 ## Results
 
-### Classification Accuracy
-The classification accuracy of the model was computed on the test set. The optimal number of codewords was determined using the validation set.
+### Classification Accuracy  
+The classification accuracy of the model was computed on the test set. The optimal number of codewords was determined using the validation set.  
+
+| **KNN (vocab size = 200)** | **SVM (vocab size = 200)** |
+|:--------------------------:|:--------------------------:|
+| ![](results/confusion_matrix_knn_200.png) | ![](results/confusion_matrix_svm_200.png) |
+
 
 ### Accuracy vs. Number of Codewords
 A graph was generated to show how classification accuracy changes with the number of codewords used in the bag-of-words model.
 
+![Accuracy vs. Number of Codewords](results/accuracy_vs_vocab_size.png)
+
 ### Multi-class SVM Accuracy Visualization
 A bar graph comparing the accuracy of different SVM kernels (Linear, Polynomial, RBF, and Sigmoid) across different scene categories was generated.
 
-### t-SNE Visualization
+![Multi-class SVM](code/accuracy_multi_class_svm200.png)
+
+### t-SNE Visualization  
 The 128-dimensional SIFT keypoints were visualized in 2D using t-SNE. This provides insights into the clustering of features.
+
+| **Vocab Size = 50** | **Vocab Size = 80** | **Vocab Size = 100** |
+|:-------------------:|:-------------------:|:--------------------:|
+| ![](results/tsne_visualization_50.png) | ![](results/tsne_visualization_80.png) | ![](results/tsne_visualization_100.png) |
+
+| **Vocab Size = 120** | **Vocab Size = 150** | **Vocab Size = 200** |
+|:--------------------:|:--------------------:|:--------------------:|
+| ![](results/tsne_visualization_120.png) | ![](results/tsne_visualization_150.png) | ![](results/tsne_visualization_200.png) |
+
 
 ### Saved Results
 - Accuracy classification reports for both KNN and SVM classifiers.
